@@ -12,6 +12,7 @@ class php53( $webadminuser = 'root', $webadmingroup = 'root') {
       'comerr-dev',
       'libaprutil1-dev', 
       'libtool',
+      'libapache2-mod-php5',
       'libc-client2007e',
       'libldap2-dev',
       'libexpat1-dev',
