@@ -149,6 +149,12 @@ class php53( $webadminuser = 'root', $webadmingroup = 'root') {
     require => Package['php53'],
   }
 
+  exec { "/usr/sbin/a2enmod headers":
+    path => "/usr/bin:/usr/sbin:/bin",
+    unless => "/usr/bin/test -f /etc/apache2/mods-enabled/headers.load",
+    require => Package['php53'],
+  }
+
   # unfotunately ubuntu packages use deprecated comments
   exec { 'clean deprecated comments in /etc/php5/cli':
     command => "find /etc/php5/cli/conf.d/* -type f -exec sed -i 's/#/;/g' {} \\;",
