@@ -5,7 +5,6 @@ class php53::dev ($webadminuser = $php53::webadminuser, $webadmingroup = $php53:
     [
       "build-essential",
       "phpmyadmin",
-      "php5-xdebug",
     ]:
       ensure => installed
   }
@@ -48,13 +47,33 @@ class php53::dev ($webadminuser = $php53::webadminuser, $webadmingroup = $php53:
   file { "/var/www/memcache.php":
     require => Package['php53'],
     ensure => present,
-    source => "puppet:///modules/php53/memcache.php",
     mode => 770,
+    source => "puppet:///modules/php53/memcache.php",
     owner => $webadminuser,
     group => $webadmingroup,
   }
 
   File["/etc/php5/apache2/php.ini"] {
     source => "puppet:///modules/php53/dev.apache2.php.ini"
+  }
+
+  package { 'PHP_CodeSniffer':
+      ensure   => present,
+      provider => pear,
+      require  => Package['php53'],
+  }
+
+  exec { 'fetch-coder':
+      cwd     => '/usr/local/lib',
+      command => "/usr/bin/git clone --branch 7.x-2.x http://git.drupal.org/project/coder.git",
+      # Won't run if exists: http://www.puppetcookbook.com/posts/run-exec-if-file-absent.html.
+      creates => '/usr/local/lib/coder',
+      require => Package['php53', 'PHP_CodeSniffer'],
+  }
+
+  file { '/usr/share/php/PHP/CodeSniffer/Standards/Drupal':
+      ensure => link,
+      target => '/usr/local/lib/coder/coder_sniffer/Drupal',
+      require => Exec['fetch-coder'],
   }
 }
