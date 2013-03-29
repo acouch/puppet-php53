@@ -40,6 +40,7 @@ class php53::dev ($webadminuser = $php53::webadminuser, $webadmingroup = $php53:
     require => Package['php53'],
     ensure => present,
     source => "puppet:///modules/php53/apc.php",
+    mode => 770,
     owner => $webadminuser,
     group => $webadmingroup,
   }
@@ -48,6 +49,7 @@ class php53::dev ($webadminuser = $php53::webadminuser, $webadmingroup = $php53:
     require => Package['php53'],
     ensure => present,
     source => "puppet:///modules/php53/memcache.php",
+    mode => 770,
     owner => $webadminuser,
     group => $webadmingroup,
   }
